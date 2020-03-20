@@ -1,0 +1,166 @@
+<script>
+  import { navigateTo } from "svelte-router-spa";
+  let data = {
+    email: "",
+    username: "",
+    password: "",
+    pass2: "",
+    checkbox: false
+  };
+
+  function submit() {
+    if (
+      data.email &&
+      data.username &&
+      data.password &&
+      data.pass2 &&
+      data.checkbox
+    ) {
+      register(data);
+    }
+  }
+
+  export let currentRoute;
+  export let params;
+  console.log({ currentRoute, params });
+
+  let loading = false;
+  export const register = async data => {
+    loading = true;
+    let userDTO = {
+      email: data.email,
+      username: data.username,
+      password: data.password
+    };
+    fetch("http://sebafudi.pl:3000/auth/register", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(userDTO)
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(body => {
+        loading = false;
+      });
+  };
+</script>
+
+<style>
+  .hero.is-success {
+    background: #f2f6fa;
+  }
+  .box {
+    margin-top: 5rem;
+  }
+  input {
+    font-weight: 300;
+  }
+  p {
+    font-weight: 700;
+  }
+  .has-text-black {
+    color: black;
+  }
+  .field {
+    padding-bottom: 10px;
+  }
+  .avatar {
+    margin-top: -70px;
+    padding-bottom: 20px;
+  }
+  .avatar img {
+    width: 128px;
+    padding: 5px;
+    background: #fff;
+    border-radius: 50%;
+    -webkit-box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1),
+      0 0 0 1px rgba(10, 10, 10, 0.1);
+    box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
+  }
+</style>
+
+<section class="hero is-success is-fullheight">
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <div class="column is-4 is-offset-4">
+        <h3 class="title has-text-black">Sign up a new account</h3>
+        <div class="box">
+          <figure class="avatar is-unselectable">
+            <img src="favicon.png" alt="gocker" />
+          </figure>
+          <form>
+            <div class="field">
+              <div class="control">
+                <input
+                  name="email"
+                  class="input is-large is-unselectable"
+                  type="email"
+                  placeholder="Your Email"
+                  bind:value={data.email} />
+              </div>
+            </div>
+            <div class="field">
+              <div class="control">
+                <input
+                  name="username"
+                  class="input is-large is-unselectable"
+                  type="text"
+                  placeholder="Your Username"
+                  bind:value={data.username} />
+              </div>
+            </div>
+            <div class="field">
+              <div class="control">
+                <input
+                  name="new-password"
+                  class="input is-large is-unselectable"
+                  type="password"
+                  placeholder="Your Password"
+                  bind:value={data.password} />
+              </div>
+            </div>
+            <div class="field">
+              <div class="control">
+                <input
+                  class="input is-large is-unselectable"
+                  type="password"
+                  placeholder="Repeat Password"
+                  bind:value={data.pass2} />
+              </div>
+            </div>
+            <div class="field">
+              <div class="field">
+                <label class="checkbox is-size-5">
+                  <input type="checkbox" bind:checked={data.checkbox} />
+                  I agree to the
+                  <a href="javascript:;" on:click={() => console.log('tos')}>
+                    terms and conditions
+                  </a>
+                </label>
+              </div>
+            </div>
+            <button
+              class="button is-block is-info is-large is-fullwidth"
+              class:is-loading={loading}
+              on:click|preventDefault={submit}>
+              Sign Up
+            </button>
+          </form>
+        </div>
+        <p class="has-text-grey">
+          <a href="javascript:;" on:click={() => navigateTo('login')}>Log In</a>
+          &nbsp;·&nbsp;
+          <a href="javascript:;" on:click={() => navigateTo('')}>
+            Forgot Password
+          </a>
+          &nbsp;·&nbsp;
+          <a href="javascript:;" on:click={() => navigateTo('')}>Homepage</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
