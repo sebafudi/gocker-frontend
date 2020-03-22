@@ -1,6 +1,7 @@
 <script>
   import { navigateTo } from "svelte-router-spa";
   import { createEventDispatcher } from "svelte";
+  import { user } from "../stores.js";
   const dispatch = createEventDispatcher();
   let data = {
     email: "",
@@ -36,8 +37,15 @@
       })
       .then(body => {
         loading = false;
+        user.update(n => body);
+        navigateTo("user");
       });
   };
+  let userFromStore;
+
+  const unsubscribe = user.subscribe(value => {
+    userFromStore = value;
+  });
 </script>
 
 <style>
